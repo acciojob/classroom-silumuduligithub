@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("students")
 public class StudentController {
 
     private StudentService studentService = new StudentService();
@@ -29,14 +28,14 @@ public class StudentController {
     @PostMapping("/add-teacher")
     public ResponseEntity<String> addTeacher(@RequestBody Teacher teacher){
         String str = studentService.addTeacher(teacher);
-        return new ResponseEntity<>("New teacher added successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("New teacher added successfully", HttpStatus.OK);
     }
 
     @PutMapping("/add-student-teacher-pair")
     public ResponseEntity<?> addStudentTeacherPair(@RequestParam String student, @RequestParam String teacher) {
         try {
             String str = studentService.addStudentTeacherPair(student, teacher);
-            return new ResponseEntity<>("New student-teacher pair added successfully", HttpStatus.CREATED);
+            return new ResponseEntity<>("New student-teacher pair added successfully", HttpStatus.OK);
         } catch (StudentNotFoundException e) {
             return new ResponseEntity<>("either student not found or teacher not found", HttpStatus.NOT_FOUND);
         }
