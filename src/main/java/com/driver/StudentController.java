@@ -28,8 +28,14 @@ public class StudentController {
 
     @PostMapping("/add-teacher")
     public ResponseEntity<String> addTeacher(@RequestBody Teacher teacher){
-       studentService.addTeacher(teacher);
-       return new ResponseEntity<>("New teacher added successfully", HttpStatus.CREATED);
+        try {
+            studentService.addTeacher(teacher);
+            return new ResponseEntity<>("New teacher added successfully", HttpStatus.CREATED);
+        }catch (TeacherNotFoundException ex){
+            return new ResponseEntity<>("teacher not found", HttpStatus.NOT_FOUND);
+        }catch (StudentNotFoundException ex){
+            return new ResponseEntity<>("student not found", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/add-student-teacher-pair")
@@ -42,12 +48,12 @@ public class StudentController {
         }
     }
     @GetMapping("/get-student-by-name/{name}")
-    public ResponseEntity<String> getStudentByName(@PathVariable String name){
+    public ResponseEntity<Student> getStudentByName(@PathVariable String name){
         try {
             Student student = studentService.getStudentByName(name);
-            return new ResponseEntity<>(name, HttpStatus.OK);
+            return new ResponseEntity<>(student, HttpStatus.OK);
         }catch (StudentNotFoundException e){
-            return new ResponseEntity<>("student not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -62,31 +68,23 @@ public class StudentController {
     }
     @GetMapping("/get-students-by-teacher-name/{teacher}")
     public ResponseEntity<List<String>> getStudentsByTeacherName(@PathVariable String teacher){
-            try {
-                List<String> studentList = studentService.getStudentsByTeacherName(teacher);
-                return new ResponseEntity<>(studentList, HttpStatus.CREATED);
-            } catch (StudentNotFoundException e) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-        }
+        List<String> studentList = studentService.getStudentsByTeacherName(teacher);
+        return new ResponseEntity<>(studentList, HttpStatus.OK);
+    }
     @GetMapping("/get-all-students")
     public ResponseEntity<List<String>> getAllStudents(){
         List<String> students = studentService.getAllStudents(); // Assign list of student by calling service layer method
-        return new ResponseEntity<>(students, HttpStatus.CREATED);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-teacher-by-name")
     public ResponseEntity<String> deleteTeacherByName(@RequestParam String teacher) {
-        try {
-           studentService.deleteTeacherByName(teacher);
-            return new ResponseEntity<>(teacher + " removed successfully", HttpStatus.CREATED);
-        } catch (StudentNotFoundException e) {
-            return new ResponseEntity<>("teacher not found exception", HttpStatus.NOT_FOUND);
-        }
+        studentService.deleteTeacherByName(teacher);
+        return new ResponseEntity<>(teacher + " removed successfully", HttpStatus.OK);
     }
     @DeleteMapping("/delete-all-teachers")
     public ResponseEntity<String> deleteAllTeachers(){
        studentService.deleteAllTeachers();
-        return new ResponseEntity<>("All teachers deleted successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("All teachers deleted successfully", HttpStatus.OK);
     }
 }

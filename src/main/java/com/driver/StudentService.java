@@ -14,7 +14,7 @@ public class StudentService {
         studentRepository.add(teacher);
     }
 
-    public void addStudentTeacherPair(String student, String teacher)throws  StudentNotFoundException{
+    public void addStudentTeacherPair(String student, String teacher)throws  StudentNotFoundException, TeacherNotFoundException{
         Optional<Student> studentOptional = studentRepository.getStudent(student);
         Optional<Teacher> teacherOptional = studentRepository.getTeacher(teacher);
         if(studentOptional.isEmpty()){
