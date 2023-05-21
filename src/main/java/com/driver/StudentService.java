@@ -1,30 +1,36 @@
 package com.driver;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class StudentService {
     private  StudentRepository studentRepository = new StudentRepository();
-    public String addStudent(Student student) {
-        studentRepository.addStudent(student);
-        return "student added successfully";
+    public void addStudent(Student student) {
+        studentRepository.add(student);
     }
 
-    public String addTeacher(Teacher teacher) {
-        studentRepository.addTeacher(teacher);
-        return "teacher added successfully";
+    public void addTeacher(Teacher teacher) {
+        studentRepository.add(teacher);
     }
 
-    public String addStudentTeacherPair(String student, String teacher)throws  StudentNotFoundException{
-       Optional<String>stringOptional = studentRepository.addstudentTeacher(student, teacher);
-       if(stringOptional.isEmpty()){
-           throw new StudentNotFoundException("not found");
-       }
-       return "both pair are added successfully";
+    public void addStudentTeacherPair(String student, String teacher)throws  StudentNotFoundException{
+        Optional<Student> studentOptional = studentRepository.getStudent(student);
+        Optional<Teacher> teacherOptional = studentRepository.getTeacher(teacher);
+        if(studentOptional.isEmpty()){
+            throw new StudentNotFoundException("invalid student name");
+        }
+        if(teacherOptional.isEmpty()){
+            throw new TeacherNotFoundException("invalid teacher name");
+        }
+        Teacher teacherObject = teacherOptional.get();
+        teacherObject.setNumberOfStudents(teacherObject.getNumberOfStudents()+1);
+        studentRepository.add(teacherObject);
+        studentRepository.add(student, teacher);
     }
 
     public Student getStudentByName(String name) throws StudentNotFoundException {
-        Optional<Student> optionalStudent = studentRepository.getStudentByName(name);
+        Optional<Student> optionalStudent = studentRepository.getStudent(name);
         if(optionalStudent.isEmpty()) {
             throw new StudentNotFoundException("not found");
         }
@@ -32,7 +38,7 @@ public class StudentService {
     }
 
     public Teacher getTeacherByName(String name) throws StudentNotFoundException{
-        Optional<Teacher> optionalTeacher = studentRepository.getTeacherByName(name);
+        Optional<Teacher> optionalTeacher = studentRepository.getTeacher(name);
         if(optionalTeacher.isEmpty()) {
             throw new StudentNotFoundException("not found");
         }
@@ -40,11 +46,7 @@ public class StudentService {
     }
 
     public List<String> getStudentsByTeacherName(String teacher) throws StudentNotFoundException{
-        List<String> studentByTeacherList = studentRepository.getStudentsByTeacherName(teacher);
-        if(studentByTeacherList.size() == 0){
-            throw new StudentNotFoundException("not found");
-        }
-        return studentByTeacherList;
+       return studentRepository.getStudentsByTeacherName(teacher);
     }
 
     public List<String> getAllStudents() {
@@ -52,16 +54,18 @@ public class StudentService {
         return studentList;
     }
 
-    public String deleteTeacherByName(String teacher) throws StudentNotFoundException{
-       Optional<String> stringOptional = studentRepository.deleteTeacherByName(teacher);
-       if(stringOptional.isEmpty()){
-           throw new StudentNotFoundException("not found");
+    public void deleteTeacherByName(String teacher){
+      studentRepository.deleteTeacher(teacher);
+       List<String> students = studentRepository.getStudentsByTeacherName(teacher);
+       for(String student : students){
+           studentRepository.deleteStudent(student);
        }
-        return "teacher deleted successfully";
     }
 
-    public String deleteAllTeachers() {
-        studentRepository.deleteAllTeachers();
-        return "all teacher are deleted";
+    public void deleteAllTeachers() {
+        ArrayList<String> teachers = studentRepository.getAllTeachers();
+        for(String teacher : teachers){
+            deleteTeacherByName(teacher);
+        }
     }
 }
