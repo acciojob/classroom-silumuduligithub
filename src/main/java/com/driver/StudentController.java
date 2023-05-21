@@ -28,23 +28,18 @@ public class StudentController {
 
     @PostMapping("/add-teacher")
     public ResponseEntity<String> addTeacher(@RequestBody Teacher teacher){
-        try {
             studentService.addTeacher(teacher);
             return new ResponseEntity<>("New teacher added successfully", HttpStatus.CREATED);
-        }catch (TeacherNotFoundException ex){
-            return new ResponseEntity<>("teacher not found", HttpStatus.NOT_FOUND);
-        }catch (StudentNotFoundException ex){
-            return new ResponseEntity<>("student not found", HttpStatus.NOT_FOUND);
         }
-    }
-
     @PutMapping("/add-student-teacher-pair")
     public ResponseEntity<String> addStudentTeacherPair(@RequestParam String student, @RequestParam String teacher) {
         try {
                 studentService.addStudentTeacherPair(student, teacher);
             return new ResponseEntity<>("New student-teacher pair added successfully", HttpStatus.OK);
-        } catch (StudentNotFoundException e) {
-            return new ResponseEntity<>("either student not found or teacher not found", HttpStatus.NOT_FOUND);
+        } catch (TeacherNotFoundException ex){
+            return new ResponseEntity<>("teacher not found", HttpStatus.NOT_FOUND);
+        }catch (StudentNotFoundException ex){
+            return new ResponseEntity<>("student not found", HttpStatus.NOT_FOUND);
         }
     }
     @GetMapping("/get-student-by-name/{name}")
