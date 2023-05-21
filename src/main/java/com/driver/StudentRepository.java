@@ -7,7 +7,8 @@ import static org.springframework.util.ClassUtils.isPresent;
 public class StudentRepository {
     private Map<String, Student> studentMap = new HashMap<>();
    private Map<String, Teacher> teacherMap = new HashMap<>();
-    private List<List<String>> teachersStudentPair = new ArrayList<>();
+//    private List<List<String>> teachersStudentPair = new ArrayList<>();
+    private Map<String, String> teachersStudentMap = new HashMap<>();
     public void addStudent(Student student) {
         studentMap.put(student.getName(), student);
     }
@@ -18,10 +19,11 @@ public class StudentRepository {
 
     public Optional<String> addstudentTeacher(String student, String teacher) {
         if(studentMap.containsKey(student) && teacherMap.containsKey(teacher)){
-            List<String> pair = new ArrayList<>();
-            pair.add(student);
-            pair.add(teacher);
-            teachersStudentPair.add(pair);
+//            List<String> pair = new ArrayList<>();
+//            pair.add(student);
+//            pair.add(teacher);
+//            teachersStudentPair.add(pair);
+            teachersStudentMap.put(student, teacher);
            return Optional.of(student);
         }
         return Optional.empty();
@@ -47,12 +49,11 @@ public class StudentRepository {
 
     public List<String> getStudentsByTeacherName(String teacher) {
        List<String> ans = new ArrayList<>();
-        for(List<String> pair : teachersStudentPair){
-           String master = pair.get(1);
-           if(master.equals(teacher)){
-               ans.add(pair.get(0));
-           }
-       }
+        for(Map.Entry<String, String>entry : teachersStudentMap.entrySet()){
+            if(teacher.equals(entry.getValue())){
+                ans.add(entry.getKey());
+            }
+        }
        return ans;
     }
 
@@ -75,6 +76,6 @@ public class StudentRepository {
 
     public void deleteAllTeachers() {
         teacherMap = null;
-        teachersStudentPair = null;
+        teachersStudentMap = null;
     }
 }
