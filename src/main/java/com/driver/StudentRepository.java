@@ -14,7 +14,7 @@ public class StudentRepository {
     }
 
     public void add(String student, String teacher) {
-        ArrayList<String> students = teacherStudentMap.getOrDefault(student, new ArrayList<>());
+        ArrayList<String> students = teacherStudentMap.getOrDefault(teacher, new ArrayList<>());
         students.add(student);
         teacherStudentMap.put(teacher, students);
     }
