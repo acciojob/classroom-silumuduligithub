@@ -1,57 +1,66 @@
 package com.driver;
 
 import java.util.*;
+
 public class StudentRepository {
-    private Map<String, Student> studentMap = new HashMap<>();
-   private Map<String, Teacher> teacherMap = new HashMap<>();
+    private Map<String,Student> studentData = new HashMap();
+    private Map<String,Teacher> teacherData = new HashMap<>();
     private Map<String, ArrayList<String>> teacherStudentMap = new HashMap<>();
+
     public void add(Student student) {
-        studentMap.put(student.getName(), student);
+        studentData.put(student.getName(), student);
     }
 
     public void add(Teacher teacher) {
-        teacherMap.put(teacher.getName(), teacher);
+        teacherData.put(teacher.getName(), teacher);
     }
 
     public void add(String student, String teacher) {
-        ArrayList<String> students = teacherStudentMap.getOrDefault(teacher, new ArrayList<>());
+        //add student to list for a particular teacher
+        ArrayList<String> students = teacherStudentMap.getOrDefault(teacher, new ArrayList<String>());
         students.add(student);
         teacherStudentMap.put(teacher, students);
     }
 
-    public Optional<Student> getStudent(String name) {
-        if(studentMap.containsKey(name)){
-            return Optional.of(studentMap.get(name));
+    public Optional<Student> getStudent(String student) {
+        if(studentData.containsKey(student)) {
+            return Optional.of(studentData.get(student));
         }
         return Optional.empty();
     }
 
-    public Optional<Teacher> getTeacher(String name) {
-       if(teacherMap.containsKey(name)){
-           return Optional.of(teacherMap.get(name));
-       }
-       return Optional.empty();
+    public Optional<Teacher> getTeacher(String teacher) {
+        if(teacherData.containsKey(teacher)) {
+            return Optional.of(teacherData.get(teacher));
+        }
+        return Optional.empty();
     }
 
-    public List<String> getStudentsByTeacherName(String teacher) {
-      return teacherStudentMap.getOrDefault(teacher, new ArrayList<>());
+    public Teacher getTeacherByName(String name) {
+        if(teacherData.containsKey(name)) {
+            return teacherData.get(name);
+        }
+        return null;
+    }
+
+    public List<String> getStudentsByTeacher(String teacher) {
+        return teacherStudentMap.getOrDefault(teacher, new ArrayList<>());
     }
 
     public List<String> getAllStudents() {
-       return new ArrayList<>(studentMap.keySet());
+        return new ArrayList<>(studentData.keySet());
+    }
+
+    public void deleteStudent(String stud) {
+        studentData.remove(stud);
     }
 
     public void deleteTeacher(String teacher) {
-        teacherMap.remove(teacher);
+        teacherData.remove(teacher);
         teacherStudentMap.remove(teacher);
     }
 
-
-    public void deleteStudent(String student) {
-        studentMap.remove(student);
-    }
-
-    public ArrayList<String> getAllTeachers() {
-        return new ArrayList<>(teacherMap.keySet());
+    public List<String> getAllTeachers() {
+        return new ArrayList<>(teacherData.keySet());
     }
 }
