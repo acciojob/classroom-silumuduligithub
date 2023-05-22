@@ -1,7 +1,6 @@
 package com.driver;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +36,9 @@ public class StudentController {
                 studentService.addStudentTeacherPair(student, teacher);
             return new ResponseEntity<>("New student-teacher pair added successfully", HttpStatus.OK);
         } catch (TeacherNotFoundException ex){
-            return new ResponseEntity<>("teacher not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("teacher not found", HttpStatus.BAD_REQUEST);
         }catch (StudentNotFoundException ex){
-            return new ResponseEntity<>("student not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("student not found", HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping("/get-student-by-name/{name}")
@@ -48,7 +47,7 @@ public class StudentController {
             Student student = studentService.getStudentByName(name);
             return new ResponseEntity<>(student, HttpStatus.OK);
         }catch (StudentNotFoundException e){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -58,7 +57,7 @@ public class StudentController {
             Teacher teacher = studentService.getTeacherByName(name);
             return new ResponseEntity<>(teacher, HttpStatus.CREATED);
         } catch (StudentNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping("/get-students-by-teacher-name/{teacher}")
