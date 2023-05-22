@@ -46,7 +46,7 @@ public class StudentService {
         return optionalTeacher.get();
     }
 
-    public List<String> getStudentsByTeacherName(String teacher) throws StudentNotFoundException{
+    public List<String> getStudentsByTeacherName(String teacher){
        return studentRepository.getStudentsByTeacherName(teacher);
     }
 
